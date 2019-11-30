@@ -17,3 +17,12 @@
     src: "/tmp/nextcloud-{{nextcloud_version}}.zip"
     dest: "/usr/share/nginx/"
     remote_src: yes
+
+- name: "Change /usr/share/nginx/html owner to nginx"
+  file:
+    path: "/usr/share/nginx/nextcloud"
+    state: directory
+    recurse: yes
+    owner: www-data
+    group: www-data
+
