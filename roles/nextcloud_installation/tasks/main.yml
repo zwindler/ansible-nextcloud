@@ -1,0 +1,19 @@
+---
+- name: "Install packages"
+  apt:
+    name: "{{item}}"
+    state: present
+  loop:
+    - unzip
+
+- name: "Download file with check (sha256)"
+  get_url:
+    url: "https://download.nextcloud.com/server/releases/nextcloud-{{nextcloud_version}}.zip"
+    dest: "/tmp/nextcloud-{{nextcloud_version}}.zip"
+    #    checksum: "sha256:https://download.nextcloud.com/server/releases/nextcloud-{{nextcloud_version}}.zip.sha256"
+
+- name: "Install nextcloud"
+  unarchive:
+    src: "/tmp/nextcloud-{{nextcloud_version}}.zip"
+    dest: "/usr/share/nginx/"
+    remote_src: yes

@@ -1,0 +1,12 @@
+---
+- hosts: all
+  connection: local
+  vars: 
+    - nextcloud_version: "17.0.1"
+  vars_prompt:
+    - name: mysql_root_password
+      prompt: "MySQL root password?"
+      private: yes
+  roles: 
+    - {role: lemp_stack}
+    - {role: nextcloud_installation}

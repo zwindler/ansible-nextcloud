@@ -1,0 +1,100 @@
+---
+- name: "Install Aptitude (recommended when using apt ansible module) and update repositories cache"
+  apt:
+    name: aptitude
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: "Apt upgrade"
+  apt:
+    upgrade: yes
+
+#    - name: "Add proxmoxve archive repository keys"
+#      apt_key:
+#        url: "http://download.proxmox.com/debian/proxmox-ve-release-{{item}}.x.gpg"
+#        state: present
+#      loop:
+#        - 5
+#        - 6
+#    - name: "Add proxmoxve archive repository and update cache"
+#      apt_repository:
+#        repo: "deb http://download.proxmox.com/debian/pve {{ansible_distribution_release}} pve-no-subscription"
+#        state: present
+#        update_cache: yes
+
+- name: "Apt upgrade"
+  apt:
+    upgrade: dist
+
+- name: "Install packages"
+  apt:
+    name: "{{item}}"
+    state: present
+  loop:
+    - nginx
+    - mariadb-server
+    - mariadb-client
+    - php-common
+    - php7.2
+    - php7.2-fpm
+    - php7.2-mysql
+    - php7.2-cli
+    - php7.2-common
+    - php7.2-json
+    - php7.2-opcache
+    - php7.2-readline
+    - php7.2-mbstring
+    - php7.2-xml
+    - php7.2-gd
+    - php7.2-curl
+    - python-mysqldb
+
+- name: "Change /usr/share/nginx/html owner to nginx"
+  file:
+    path: "/usr/share/nginx/html"
+    state: directory
+    recurse: yes
+    owner: www-data
+    group: www-data
+
+- name: "Make sure services is running"
+  systemd:
+    state: started
+    enabled: yes
+    name: "{{item}}"
+  loop:
+    - nginx
+    - php7.2-fpm
+    - mariadb
+#Run a equivalent of mysql_secure_install (see https://stackoverflow.com/questions/25136498/ansible-answers-to-mysql-secure-installation)
+- name: "Set the root password"
+  mysql_user: 
+    user: root
+    password: "{{ mysql_root_password }}"
+    host: localhost      
+
+- name: "Delete anonymous MySQL server user"
+  mysql_user: 
+    user: ""
+    host: "{{ ansible_fqdn }}" 
+    state: "absent"
+  loop:
+    - "localhost"
+    - "{{ ansible_fqdn }}"
+
+- name: "Secure the MySQL root user"
+  mysql_user:
+    user: "root"
+    password: "{{ mysql_root_password }}"
+    host: "{{item}}"
+  loop:
+    - "::1"
+    - "127.0.0.1"
+    - "localhost"
+    - "{{ ansible_fqdn }}"
+
+- name: "Remove nginx default file"
+  file: 
+    path: "/etc/nginx/sites-enabled/default"
+    state: absent
