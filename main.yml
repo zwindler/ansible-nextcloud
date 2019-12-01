@@ -5,8 +5,11 @@
     - nextcloud_version: "17.0.1"
   vars_prompt:
     - name: mysql_root_password
-      prompt: "MySQL root password?"
+      prompt: "MariaDB root password"
+      private: yes
+    - name: nextcloud_mariadb_password
+      prompt: "Nextcloud MariaDB password"
       private: yes
   roles: 
-    - {role: lemp_stack}
+  # - {role: lemp_stack}
     - {role: nextcloud_installation}

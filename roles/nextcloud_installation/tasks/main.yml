@@ -18,7 +18,7 @@
     dest: "/usr/share/nginx/"
     remote_src: yes
 
-- name: "Change /usr/share/nginx/html owner to nginx"
+- name: "Change /usr/share/nginx/nextcloud owner to nginx"
   file:
     path: "/usr/share/nginx/nextcloud"
     state: directory
@@ -26,3 +26,32 @@
     owner: www-data
     group: www-data
 
+- name: "Install packages"
+  apt:
+    name: "{{item}}"
+    state: present
+  loop:
+    - php-imagick 
+    - php7.2-common 
+    - php7.2-mysql 
+    - php7.2-fpm
+    - php7.2-gd
+    - php7.2-json
+    - php7.2-curl
+    - php7.2-zip
+    - php7.2-xml
+    - php7.2-mbstring
+    - php7.2-bz2 
+    - php7.2-intl
+
+- name: "Create a new database for nextcloud"
+  mysql_db:
+    name: nextcloud
+    state: present
+
+- name: "Create database user nextcloud with password and nextcloud database privileges and 'WITH GRANT OPTION'"
+  mysql_user:
+    name: nextcloud
+    password: "{{nextcloud_mariadb_password}}" 
+    priv: 'nextcloud.*:ALL,GRANT'
+    state: present
