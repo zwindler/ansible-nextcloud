@@ -10,6 +10,18 @@
     - name: nextcloud_mariadb_password
       prompt: "Nextcloud MariaDB password"
       private: yes
+    - name: your_domain
+      prompt: "Your domain"
+      private: no
+    - name: nextcloud_port
+      prompt: "Nextcloud HTTPS port"
+      default: 8443
+      private: no
+    - name: nextcloud_instance_name
+      prompt: "Nextcloud instance name (URL will be https://[thisvalue].[your_domain])"
+      default: "nextcloud"
+      private: no
   roles: 
-  # - {role: lemp_stack}
+    - {role: lemp_stack}
+    - {role: letsencrypt_dns_challenge}
     - {role: nextcloud_installation}

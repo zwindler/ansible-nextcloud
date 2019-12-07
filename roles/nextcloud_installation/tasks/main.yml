@@ -55,3 +55,19 @@
     password: "{{nextcloud_mariadb_password}}" 
     priv: 'nextcloud.*:ALL,GRANT'
     state: present
+
+- name: "Configure nginx for nextcloud instance"
+  template:
+    src: nextcloud.conf.j2
+    dest: "/etc/nginx/sites-available/{{nextcloud_instance_name}}.{{your_domain}}.conf"
+
+- name: "Create a link in sites-enabled"
+  file:
+    src: "/etc/nginx/sites-available/{{nextcloud_instance_name}}.{{your_domain}}.conf"
+    dest: "/etc/nginx/sites-enabled/{{nextcloud_instance_name}}.{{your_domain}}.conf"
+    state: link
+
+- name: "Restart nginx (TODO make a handler instead"
+  systemd:
+    name: nginx
+    state: restarted
