@@ -1,0 +1,53 @@
+---
+- apt_repository:
+    repo: ppa:certbot/certbot
+
+- name: "Apt upgrade"
+  apt:
+    upgrade: dist
+
+- name: "Install packages"
+  apt:
+    name: "{{item}}"
+    state: present
+  loop:
+    - python-certbot-nginx
+
+#TODO, automate this with Ansible module, see https://docs.ansible.com/ansible/latest/modules/acme_certificate_module.html#acme-certificate-module
+#- name: "Create a challenge for {{nextcloud_instance_name}}.{{your_domain}} using a account key file"
+#  letsencrypt:
+#    account_key_src: /etc/pki/cert/private/account.key
+#    account_email: myself@{{nextcloud_instance_name}}.{{your_domain}}
+#    src: /etc/pki/cert/csr/{{nextcloud_instance_name}}.{{your_domain}}.csr
+#    cert: /etc/httpd/ssl/{{nextcloud_instance_name}}.{{your_domain}}.crt
+#    challenge: dns-01
+#    acme_directory: https://acme-v01.api.letsencrypt.org/directory
+#    # Renew if the certificate is at least 30 days old
+#    remaining_days: 60
+#  register: {{nextcloud_instance_name}}.{{your_domain}}_challenge
+
+# Alternative way:
+#
+# - route53:
+#     zone: sample.com
+#     record: "{{ item.key }}"
+#     type: TXT
+#     ttl: 60
+#     # Note: item.value is a list of TXT entries, and route53
+#     # requires every entry to be enclosed in quotes
+#     value: "{{ item.value | map('regex_replace', '^(.*)$', ''\1'' ) | list }}"
+#     with_dict: sample_com_challenge.challenge_data_dns
+#     when: sample_com_challenge is changed
+
+#- name: Let the challenge be validated and retrieve the cert and intermediate certificate
+#  letsencrypt:
+#    account_key_src: /etc/pki/cert/private/account.key
+#    account_email: myself@sample.com
+#    src: /etc/pki/cert/csr/sample.com.csr
+#   cert: /etc/httpd/ssl/sample.com.crt
+#    fullchain: /etc/httpd/ssl/sample.com-fullchain.crt
+#   chain: /etc/httpd/ssl/sample.com-intermediate.crt
+#    challenge: dns-01
+#   acme_directory: https://acme-v01.api.letsencrypt.org/directory
+#    remaining_days: 60
+#   data: "{{ sample_com_challenge }}"
