@@ -58,9 +58,31 @@
     owner: www-data
     group: www-data
 
-- name: "Make sure services is running"
+- name: "Enable PATH in php-fpm config"
+  lineinfile:
+    path: "/etc/php/7.2/fpm/pool.d/www.conf" 
+    line: "env[PATH] = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" 
+
+- name: "Change php.ini memory setting to minimum requirements"
+  lineinfile:
+    path: "/etc/php/7.2/fpm/php.ini"
+    line: "memory_limit = 512M"
+    regex: "^memory_limit ="
+    backrefs: yes
+
+- name: "Change InnoDB configuration"
+  lineinfile: 
+    path: "/etc/mysql/mariadb.conf.d/50-server.cnf"
+    line: "{{item}}"
+    insertafter: "[mysqld]"
+  loop:
+    - "innodb_large_prefix=true"
+    - "innodb_file_format=barracuda"
+    - "innodb_file_per_table=1"
+
+- name: "Make sure services is running and restart them"
   systemd:
-    state: started
+    state: restarted
     enabled: yes
     name: "{{item}}"
   loop:
