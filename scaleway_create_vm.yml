@@ -1,0 +1,5 @@
+---
+- hosts: localhost
+  connection: local
+  roles: 
+  - {role: "scaleway_create_vm"}
