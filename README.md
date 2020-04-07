@@ -111,3 +111,7 @@ The playbook will prompt you for variables like password or DNS names. Store the
 ## TODO
 
 * Automate Lets Encrypt certificate generation (ideally both HTTP and DNS challenge)
+
+## Sources
+
+* [github.com/felixfontein/acme-certificate](https://github.com/felixfontein/acme-certificate)

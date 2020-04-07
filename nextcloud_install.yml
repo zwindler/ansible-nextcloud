@@ -20,7 +20,10 @@
       prompt: "Nextcloud instance name (URL will be https://[thisvalue].[your_domain])"
       default: "nextcloud"
       private: no
+    - name: admin_email
+      prompt: "Administrator email (for LE certs)"
+      private: no
   roles: 
-    - {role: lemp_stack}
-    - {role: letsencrypt_dns_challenge}
+#    - {role: lemp_stack}
+    - {role: letsencrypt_challenge}
     - {role: nextcloud_installation}
