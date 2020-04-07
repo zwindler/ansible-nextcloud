@@ -61,3 +61,53 @@ Use scaleway\_create\_vm.yaml to:
 ```bash
 ansible-playbook scaleway_create_vm.yml
 ```
+
+If everything works, you should have a new VM in about 2 minutes in your Scaleway console.
+
+Try to initiate a connection to this VM (don't forget to add your SSH key in agent or as an argument in `ssh` call)
+
+```
+ssh root@IP_found_in_console
+[...]
+Welcome on Ubuntu Bionic Beaver (18.04 LTS) (GNU/Linux 4.15.0-58-generic x86_64 )
+```
+
+### Install python and sudo on Scaleway instance
+
+One issue that comes with Scaleway clean images is that they don't have neither sudo nor python, which will prevent us from using ansible. You can either install them manually, or use the following command to install them from your local machine:
+
+```bash
+ansible-playbook -i dynamic_inventory.yml -u root scaleway_install_prerequisites.yml
+```
+
+## Install Nextcloud
+
+### DNS resolution
+
+With the Ubuntu 18.04 available with a public IP, it's important to choose a DNS name for your future nextcloud service.
+
+Use a DNS name provider to add a IPv4/6 A/AAAA record to map this DNS name to your server IP.
+
+### Installation
+
+Now that you have a working Ubuntu 18.04 available and resolvable, you can either run the installation playbook from your local machine to install on the distant server or directly from the future Ubuntu Nextcloud server.
+
+Depending from where the playbook is run:
+
+* If you run it directly on the future Nextcloud server, get the ` zwindler/ansible-nextcloud` repository on it.  We will use the "-i hosts\_local" parameter for `ansible-playbook`
+* If you just generated a Scaleway VM (previous chapter), we can use Scaleway dynamic inventory. We will use the "-i dynamic\_inventory.yml" parameter for `ansible-playbook`
+* If you run it from your current computer, please ensure that you can connect with SSH to the Nextcloud machine. We have to generate an inventory file by just adding the IP address of the distant Nextcloud server in a text file `echo "IP_found_in_console" > hosts_distant`. We will use the "-i hosts\_distant" parameter for `ansible-playbook`
+
+Assuming that you chosed the Scaleway method, this should look like this:
+
+```bash
+ansible-playbook -i dynamic_inventory.yml nextcloud_install.yml
+```
+
+The playbook will prompt you for variables like password or DNS names. Store them for future use.
+
+### Result
+
+## TODO
+
+* Automate Lets Encrypt certificate generation (ideally both HTTP and DNS challenge)

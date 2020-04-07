@@ -1,8 +1,7 @@
 ---
 - hosts: all
-  connection: local
   vars: 
-    - nextcloud_version: "17.0.1"
+    - nextcloud_version: "18.0.3"
   vars_prompt:
     - name: mysql_root_password
       prompt: "MariaDB root password"
@@ -15,7 +14,7 @@
       private: no
     - name: nextcloud_port
       prompt: "Nextcloud HTTPS port"
-      default: 8443
+      default: 443
       private: no
     - name: nextcloud_instance_name
       prompt: "Nextcloud instance name (URL will be https://[thisvalue].[your_domain])"
