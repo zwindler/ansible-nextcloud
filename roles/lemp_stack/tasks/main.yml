@@ -15,6 +15,7 @@
     name: "{{item}}"
     state: present
   loop:
+    - sudo
     - nginx
     - mariadb-server
     - mariadb-client

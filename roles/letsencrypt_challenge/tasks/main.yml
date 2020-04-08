@@ -87,7 +87,7 @@
     fullchain_dest: "/etc/nginx/ssl/{{nextcloud_instance_name}}.{{your_domain}}-fullchain.crt"
     chain_dest: "/etc/nginx/ssl/{{nextcloud_instance_name}}.{{your_domain}}-intermediate.crt"
     data: "{{ acme_challenge }}"
-  notify: "reload nginx"
+  notify: "nginx reload"
 
 - name: "Clean challenges files"
   file: 

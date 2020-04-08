@@ -24,6 +24,6 @@
       prompt: "Administrator email (for LE certs)"
       private: no
   roles: 
-#    - {role: lemp_stack}
+    - {role: lemp_stack}
     - {role: letsencrypt_challenge}
     - {role: nextcloud_installation}
