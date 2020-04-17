@@ -6,7 +6,6 @@
 - name: "Find a suitable Ubuntu image"
   set_fact:
     ubuntu_image: "{{item.id}}"
-#  when: item.arch == "x86_64" and item.name == "Ubuntu Bionic Beaver" and item.root_volume.size == 20000000000
   when: item.arch == "x86_64" and item.name == "Ubuntu Bionic Beaver"
   loop: "{{ scaleway_image_facts }}"
 
