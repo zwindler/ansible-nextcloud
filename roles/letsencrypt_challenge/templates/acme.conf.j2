@@ -1,0 +1,14 @@
+#See https://docs.nextcloud.com/server/17/admin_manual/installation/nginx.html
+server {
+    listen 80;
+    listen [::]:80;
+    server_name {{nextcloud_instance_name}}.{{your_domain}};
+    location /.well-known/acme-challenge/ {
+        alias /usr/share/nginx/challenges/.well-known/acme-challenge/;
+        try_files $uri =404;
+    }
+    # enforce https
+    location / {
+        return 301 https://$server_name:{{nextcloud_port}}$request_uri;
+    }
+}

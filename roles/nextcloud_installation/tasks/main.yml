@@ -20,11 +20,13 @@
 
 - name: "Change /usr/share/nginx/nextcloud owner to nginx"
   file:
-    path: "/usr/share/nginx/nextcloud"
+    path: "{{item}}"
     state: directory
     recurse: yes
     owner: www-data
     group: www-data
+  loop:
+    - "/usr/share/nginx/nextcloud"
 
 - name: "Install packages"
   apt:
@@ -68,8 +70,4 @@
     src: "/etc/nginx/sites-available/{{nextcloud_instance_name}}.{{your_domain}}.conf"
     dest: "/etc/nginx/sites-enabled/{{nextcloud_instance_name}}.{{your_domain}}.conf"
     state: link
-
-- name: "Restart nginx (TODO make a handler instead"
-  systemd:
-    name: nginx
-    state: restarted
+  notify: "nginx reload"

@@ -10,28 +10,12 @@
   apt:
     upgrade: yes
 
-#    - name: "Add proxmoxve archive repository keys"
-#      apt_key:
-#        url: "http://download.proxmox.com/debian/proxmox-ve-release-{{item}}.x.gpg"
-#        state: present
-#      loop:
-#        - 5
-#        - 6
-#    - name: "Add proxmoxve archive repository and update cache"
-#      apt_repository:
-#        repo: "deb http://download.proxmox.com/debian/pve {{ansible_distribution_release}} pve-no-subscription"
-#        state: present
-#        update_cache: yes
-
-- name: "Apt upgrade"
-  apt:
-    upgrade: dist
-
 - name: "Install packages"
   apt:
     name: "{{item}}"
     state: present
   loop:
+    - sudo
     - nginx
     - mariadb-server
     - mariadb-client
@@ -49,14 +33,25 @@
     - php7.2-gd
     - php7.2-curl
     - python-mysqldb
+    - python-pip
 
-- name: "Change /usr/share/nginx/html owner to nginx"
+- name: "Add python deps"
+  pip:
+    name: cryptography
+
+- name: "Create dirs with owner to nginx"
   file:
-    path: "/usr/share/nginx/html"
+    path: "{{item}}"
     state: directory
     recurse: yes
     owner: www-data
     group: www-data
+  loop:
+    - "/usr/share/nginx/html"
+    - "/usr/share/nginx/nextcloud"
+    - "/etc/pki/cert/private"
+    - "/etc/pki/cert/csr"
+    - "/etc/nginx/ssl"
 
 - name: "Enable PATH in php-fpm config"
   lineinfile:
