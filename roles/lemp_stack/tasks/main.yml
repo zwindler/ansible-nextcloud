@@ -10,7 +10,7 @@
   apt:
     upgrade: yes
 
-- name: "Install packages"
+- name: "Install prerequisites"
   apt:
     name: "{{item}}"
     state: present
@@ -19,25 +19,38 @@
     - nginx
     - mariadb-server
     - mariadb-client
-    - php-common
-    - php7.2
-    - php7.2-fpm
-    - php7.2-mysql
-    - php7.2-cli
-    - php7.2-common
-    - php7.2-json
-    - php7.2-opcache
-    - php7.2-readline
-    - php7.2-mbstring
-    - php7.2-xml
-    - php7.2-gd
-    - php7.2-curl
     - python-mysqldb
     - python-pip
 
 - name: "Add python deps"
   pip:
-    name: cryptography
+    name: "{{item}}"
+  loop:
+    - cryptography
+    - python-apt
+
+- name: "Add ppa:ondrej/php"
+  apt_repository:
+    repo: ppa:ondrej/php
+    state: present
+
+- name: "Install PHP packages"
+  apt:
+    name: "{{item}}"
+    state: present
+  loop:
+    - php7.4
+    - php7.4-fpm
+    - php7.4-mysql
+    - php7.4-cli
+    - php7.4-common
+    - php7.4-json
+    - php7.4-opcache
+    - php7.4-readline
+    - php7.4-mbstring
+    - php7.4-xml
+    - php7.4-gd
+    - php7.4-curl
 
 - name: "Create dirs with owner to nginx"
   file:
@@ -55,14 +68,14 @@
 
 - name: "Enable PATH in php-fpm config"
   lineinfile:
-    path: "/etc/php/7.2/fpm/pool.d/www.conf" 
+    path: "/etc/php/7.4/fpm/pool.d/www.conf" 
     line: "env[PATH] = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" 
 
 - name: "Change php.ini memory setting to minimum requirements"
   lineinfile:
-    path: "/etc/php/7.2/fpm/php.ini"
+    path: "/etc/php/7.4/fpm/php.ini"
     line: "memory_limit = 512M"
-    regex: "^memory_limit ="
+    regexp: "^memory_limit ="
     backrefs: yes
 
 - name: "Change InnoDB configuration"
@@ -82,7 +95,7 @@
     name: "{{item}}"
   loop:
     - nginx
-    - php7.2-fpm
+    - php7.4-fpm
     - mariadb
 #Run a equivalent of mysql_secure_install (see https://stackoverflow.com/questions/25136498/ansible-answers-to-mysql-secure-installation)
 - name: "Set the root password"

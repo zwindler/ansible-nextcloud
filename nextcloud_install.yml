@@ -1,7 +1,7 @@
 ---
 - hosts: all
   vars: 
-    - nextcloud_version: "18.0.3"
+    - nextcloud_version: "19.0.0"
   vars_prompt:
     - name: mysql_root_password
       prompt: "MariaDB root password"
