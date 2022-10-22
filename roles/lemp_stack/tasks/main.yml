@@ -19,8 +19,8 @@
     - nginx
     - mariadb-server
     - mariadb-client
-    - python3-pip
-    - python3-mysqldb
+    - python-mysqldb
+    - python-pip
 
 - name: "Add python deps"
   pip:
@@ -29,23 +29,28 @@
     - cryptography
     - python-apt
 
+- name: "Add ppa:ondrej/php"
+  apt_repository:
+    repo: ppa:ondrej/php
+    state: present
+
 - name: "Install PHP packages"
   apt:
     name: "{{item}}"
     state: present
   loop:
-    - php
-    - php-fpm
-    - php-mysql
-    - php-cli
-    - php-common
-    - php-json
-    - php-opcache
-    - php-readline
-    - php-mbstring
-    - php-xml
-    - php-gd
-    - php-curl
+    - php7.4
+    - php7.4-fpm
+    - php7.4-mysql
+    - php7.4-cli
+    - php7.4-common
+    - php7.4-json
+    - php7.4-opcache
+    - php7.4-readline
+    - php7.4-mbstring
+    - php7.4-xml
+    - php7.4-gd
+    - php7.4-curl
 
 - name: "Create dirs with owner to nginx"
   file:
@@ -63,12 +68,12 @@
 
 - name: "Enable PATH in php-fpm config"
   lineinfile:
-    path: "/etc/php/8.1/fpm/pool.d/www.conf" 
+    path: "/etc/php/7.4/fpm/pool.d/www.conf" 
     line: "env[PATH] = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" 
 
 - name: "Change php.ini memory setting to minimum requirements"
   lineinfile:
-    path: "/etc/php/8.1/fpm/php.ini"
+    path: "/etc/php/7.4/fpm/php.ini"
     line: "memory_limit = 512M"
     regexp: "^memory_limit ="
     backrefs: yes
@@ -90,7 +95,7 @@
     name: "{{item}}"
   loop:
     - nginx
-    - php-fpm
+    - php7.4-fpm
     - mariadb
 #Run a equivalent of mysql_secure_install (see https://stackoverflow.com/questions/25136498/ansible-answers-to-mysql-secure-installation)
 - name: "Set the root password"
