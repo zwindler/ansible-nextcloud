@@ -90,8 +90,9 @@
     name: "{{item}}"
   loop:
     - nginx
-    - php-fpm
+    - php8.1-fpm
     - mariadb
+
 #Run a equivalent of mysql_secure_install (see https://stackoverflow.com/questions/25136498/ansible-answers-to-mysql-secure-installation)
 - name: "Set the root password"
   mysql_user: 
