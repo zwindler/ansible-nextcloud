@@ -10,7 +10,7 @@
   get_url:
     url: "https://download.nextcloud.com/server/releases/nextcloud-{{nextcloud_version}}.zip"
     dest: "/tmp/nextcloud-{{nextcloud_version}}.zip"
-    #    checksum: "sha256:https://download.nextcloud.com/server/releases/nextcloud-{{nextcloud_version}}.zip.sha256"
+    checksum: "sha256:https://download.nextcloud.com/server/releases/nextcloud-{{nextcloud_version}}.zip.sha256"
 
 - name: "Install nextcloud"
   unarchive:
@@ -27,26 +27,6 @@
     group: www-data
   loop:
     - "/usr/share/nginx/nextcloud"
-
-- name: "Install packages"
-  apt:
-    name: "{{item}}"
-    state: present
-  loop:
-    - php8.1-imagick 
-    - php8.1-common 
-    - php8.1-mysql 
-    - php8.1-fpm
-    - php8.1-gd
-    - php8.1-json
-    - php8.1-curl
-    - php8.1-zip
-    - php8.1-xml
-    - php8.1-mbstring
-    - php8.1-bz2 
-    - php8.1-intl
-    - php8.1-bcmath
-    - php8.1-gmp
 
 - name: "Create a new database for nextcloud"
   mysql_db:
