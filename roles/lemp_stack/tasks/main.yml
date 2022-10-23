@@ -1,126 +1,16 @@
 ---
-- name: "Install Aptitude (recommended when using apt ansible module) and update repositories cache"
-  apt:
-    name: aptitude
-    state: present
-    update_cache: yes
-    cache_valid_time: 3600
+- name: "Install packages and prerequisites"
+  ansible.builtin.include_tasks:
+    file: install.yml
 
-- name: "Apt upgrade"
-  apt:
-    upgrade: yes
+- name: "Configure nginx"
+  ansible.builtin.include_tasks:
+    file: configure_nginx.yml
 
-- name: "Install prerequisites"
-  apt:
-    name: "{{item}}"
-    state: present
-  loop:
-    - sudo
-    - nginx
-    - mariadb-server
-    - mariadb-client
-    - python3-pip
-    - python3-mysqldb
+- name: "Configure mariadb"
+  ansible.builtin.include_tasks:
+    file: configure_mariadb.yml
 
-- name: "Add python deps"
-  pip:
-    name: "{{item}}"
-  loop:
-    - cryptography
-    - python-apt
-
-- name: "Install PHP packages"
-  apt:
-    name: "{{item}}"
-    state: present
-  loop:
-    - php
-    - php-fpm
-    - php-mysql
-    - php-cli
-    - php-common
-    - php-json
-    - php-opcache
-    - php-readline
-    - php-mbstring
-    - php-xml
-    - php-gd
-    - php-curl
-
-- name: "Create dirs with owner to nginx"
-  file:
-    path: "{{item}}"
-    state: directory
-    recurse: yes
-    owner: www-data
-    group: www-data
-  loop:
-    - "/usr/share/nginx/html"
-    - "/usr/share/nginx/nextcloud"
-    - "/etc/pki/cert/private"
-    - "/etc/pki/cert/csr"
-    - "/etc/nginx/ssl"
-
-- name: "Enable PATH in php-fpm config"
-  lineinfile:
-    path: "/etc/php/8.1/fpm/pool.d/www.conf" 
-    line: "env[PATH] = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" 
-
-- name: "Change php.ini memory setting to minimum requirements"
-  lineinfile:
-    path: "/etc/php/8.1/fpm/php.ini"
-    line: "memory_limit = 512M"
-    regexp: "^memory_limit ="
-    backrefs: yes
-
-- name: "Change InnoDB configuration"
-  lineinfile: 
-    path: "/etc/mysql/mariadb.conf.d/50-server.cnf"
-    line: "{{item}}"
-    insertafter: "[mysqld]"
-  loop:
-    - "innodb_large_prefix=true"
-    - "innodb_file_format=barracuda"
-    - "innodb_file_per_table=1"
-
-- name: "Make sure services is running and restart them"
-  systemd:
-    state: restarted
-    enabled: yes
-    name: "{{item}}"
-  loop:
-    - nginx
-    - php8.1-fpm
-    - mariadb
-
-#Run a equivalent of mysql_secure_install (see https://stackoverflow.com/questions/25136498/ansible-answers-to-mysql-secure-installation)
-- name: "Set the root password"
-  mysql_user: 
-    user: root
-    password: "{{ mysql_root_password }}"
-    host: localhost      
-
-- name: "Delete anonymous MySQL server user"
-  mysql_user: 
-    user: ""
-    host: "{{ ansible_fqdn }}" 
-    state: "absent"
-  loop:
-    - "localhost"
-    - "{{ ansible_fqdn }}"
-
-- name: "Secure the MySQL root user"
-  mysql_user:
-    user: "root"
-    password: "{{ mysql_root_password }}"
-    host: "{{item}}"
-  loop:
-    - "::1"
-    - "127.0.0.1"
-    - "localhost"
-    - "{{ ansible_fqdn }}"
-
-- name: "Remove nginx default file"
-  file: 
-    path: "/etc/nginx/sites-enabled/default"
-    state: absent
+- name: "Secure mariadb"
+  ansible.builtin.include_tasks:
+    file: secure_mariadb.yml
