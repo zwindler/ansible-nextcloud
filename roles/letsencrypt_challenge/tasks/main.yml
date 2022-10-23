@@ -11,7 +11,7 @@
     name: "{{item}}"
     state: present
   loop:
-    - python-certbot-nginx
+    - python3-certbot-nginx
 
 - name: "Generate RSA 4096 key"
   openssl_privatekey:
