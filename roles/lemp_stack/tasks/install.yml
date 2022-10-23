@@ -46,3 +46,9 @@
     - php-xml
     - php-gd
     - php-curl
+    - php-imagick 
+    - php-zip
+    - php-bz2 
+    - php-intl
+    - php-bcmath
+    - php-gmp
