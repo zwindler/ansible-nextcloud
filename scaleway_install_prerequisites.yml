@@ -1,8 +1,0 @@
----
-- hosts: nextcloud
-  gather_facts: no
-  pre_tasks:
-  - name: "apt-get update"
-    raw: "apt-get update"
-  - name: "Install Ansible prerequisites on remote hosts"
-    raw: "DEBIAN_FRONTEND=noninteractive apt-get -y install python python-apt"

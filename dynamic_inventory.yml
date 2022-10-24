@@ -1,5 +1,0 @@
-plugin: scaleway
-regions:
-  - par1
-tags:
-  - nextcloud
