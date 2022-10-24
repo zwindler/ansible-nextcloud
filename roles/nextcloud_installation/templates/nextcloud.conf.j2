@@ -1,7 +1,7 @@
 #See https://docs.nextcloud.com/server/17/admin_manual/installation/nginx.html
 upstream php-handler {
     #server 127.0.0.1:9000;
-    server unix:/var/run/php/php7.4-fpm.sock;
+    server unix:/var/run/php/{{ php_version }}-fpm.sock;
 }
 
 server {
