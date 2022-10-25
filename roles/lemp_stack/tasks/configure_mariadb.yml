@@ -1,0 +1,14 @@
+---
+- name: "Change InnoDB configuration"
+  lineinfile: 
+    path: "/etc/mysql/mariadb.conf.d/50-server.cnf"
+    line: "{{item}}"
+    insertafter: "[mysqld]"
+  loop:
+    - "innodb_large_prefix=true"
+    - "innodb_file_format=barracuda"
+    - "innodb_file_per_table=1"
+  notify: "restart mariadb"
+
+- name: "Flush handlers"
+  meta: flush_handlers

@@ -1,0 +1,37 @@
+---
+#Run an equivalent of mysql_secure_install (see https://stackoverflow.com/questions/25136498/ansible-answers-to-mysql-secure-installation)
+- name: "Set the root password"
+  community.mysql.mysql_user: 
+    user: root
+    password: "{{ mysql_root_password }}"
+    host: localhost      
+
+- name: "Create a /root/.my.cnf file"
+  ansible.builtin.template:
+    src: my.cnf.j2
+    dest: /root/.my.cnf
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Removes all anonymous user accounts
+  community.mysql.mysql_user:
+    name: ''
+    host_all: yes
+    state: absent
+
+- name: "Secure the MySQL root user"
+  community.mysql.mysql_user:
+    user: "root"
+    password: "{{ mysql_root_password }}"
+    host: "{{item}}"
+  loop:
+    - "::1"
+    - "127.0.0.1"
+    - "localhost"
+    - "{{ ansible_fqdn }}"
+
+- name: "Remove nginx default file"
+  file: 
+    path: "/etc/nginx/sites-enabled/default"
+    state: absent

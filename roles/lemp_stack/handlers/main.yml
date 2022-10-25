@@ -1,0 +1,18 @@
+---
+- name: "restart nginx"
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: yes
+    name: nginx
+
+- name: "restart php-fpm"
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: yes
+    name: "{{ php_version }}-fpm"
+
+- name: "restart mariadb"
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: yes
+    name: mariadb

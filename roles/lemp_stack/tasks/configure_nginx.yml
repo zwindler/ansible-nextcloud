@@ -1,0 +1,32 @@
+---
+- name: "Create dirs with owner to nginx"
+  file:
+    path: "{{item}}"
+    state: directory
+    recurse: yes
+    owner: www-data
+    group: www-data
+  loop:
+    - "/usr/share/nginx/html"
+    - "/usr/share/nginx/nextcloud"
+    - "/etc/pki/cert/private"
+    - "/etc/pki/cert/csr"
+    - "/etc/nginx/ssl"
+  notify: "restart nginx"
+
+- name: "Enable PATH in php-fpm config"
+  lineinfile:
+    path: "/etc/php/8.1/fpm/pool.d/www.conf" 
+    line: "env[PATH] = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" 
+  notify: "restart nginx"
+
+- name: "Change php.ini memory setting to minimum requirements"
+  lineinfile:
+    path: "/etc/php/8.1/fpm/php.ini"
+    line: "memory_limit = 512M"
+    regexp: "^memory_limit ="
+    backrefs: yes
+  notify: "restart nginx"
+
+- name: "Flush handlers"
+  meta: flush_handlers
