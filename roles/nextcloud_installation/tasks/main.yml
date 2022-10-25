@@ -44,6 +44,7 @@
   template:
     src: nextcloud.conf.j2
     dest: "/etc/nginx/sites-available/{{nextcloud_instance_name}}.{{your_domain}}.conf"
+  notify: "nginx reload"
 
 - name: "Create a link in sites-enabled"
   file:
