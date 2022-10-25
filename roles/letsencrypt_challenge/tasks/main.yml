@@ -1,11 +1,4 @@
 ---
-# - apt_repository:
-#     repo: ppa:certbot/certbot
-#
-# - name: "Apt upgrade"
-#   apt:
-#     upgrade: dist
-
 - name: "Install packages"
   apt:
     name: "{{item}}"
