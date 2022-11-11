@@ -1,0 +1,4 @@
+all:
+  hosts:
+    drive.zwindler.fr:
+      ansible_ssh_user: ubuntu

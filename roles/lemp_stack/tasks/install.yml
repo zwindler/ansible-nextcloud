@@ -15,40 +15,17 @@
     name: "{{item}}"
     state: present
   loop:
-    - sudo
-    - nginx
-    - mariadb-server
-    - mariadb-client
-    - python3-pip
-    - python3-mysqldb
+    - "{{ apt_packages }}"
 
 - name: "Add python 3 deps"
   pip:
     name: "{{item}}"
   loop:
-    - cryptography
-    - python-apt
+    - "{{ pip3_dependancies }}"
 
 - name: "Install PHP packages"
   apt:
     name: "{{item}}"
     state: present
   loop:
-    - php
-    - php-fpm
-    - php-mysql
-    - php-cli
-    - php-common
-    - php-json
-    - php-opcache
-    - php-readline
-    - php-mbstring
-    - php-xml
-    - php-gd
-    - php-curl
-    - php-imagick 
-    - php-zip
-    - php-bz2 
-    - php-intl
-    - php-bcmath
-    - php-gmp
+    - "{{ php_apt_packages }}"

@@ -13,4 +13,4 @@
 
 - name: "Secure mariadb"
   ansible.builtin.include_tasks:
-    file: secure_mariadb.yml
+    file: secure_mariadb_nginx.yml

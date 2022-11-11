@@ -1,2 +1,22 @@
 ---
 php_version: "php8.1"
+
+apt_packages:
+  - sudo
+  - nginx
+  - mariadb-server
+  - mariadb-client
+  - python3-pip
+  - python3-mysqldb
+  - unzip
+
+php_apt_packages:
+    - php
+    - php-fpm
+    - php-mysql
+    - php-cli
+    - php-common
+
+pip3_dependancies:
+    - cryptography
+    - python-apt
